@@ -103,15 +103,13 @@ CREATE TABLE TableReservations (
 
 CREATE TABLE OrderMenuItems (
 	oid INTEGER REFERENCES Orders (oid),
-	item_name VARCHAR(255),
+	item_name VARCHAR(255) REFERENCES MenuItems (item_name),
 	quantity INTEGER CHECK (quantity >= 0),
-	FOREIGN KEY (item_name) REFERENCES MenuItems (item_name),
 	PRIMARY KEY (oid, item_name)
 );
 
 CREATE TABLE TableOrders (
 	oid INTEGER REFERENCES Orders (oid),
-	table_number INTEGER,
-	FOREIGN KEY (table_number) REFERENCES Tables (table_number),
+	table_number INTEGER REFERENCES Tables (table_number),
 	PRIMARY KEY (oid, table_number)
 );
