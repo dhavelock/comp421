@@ -1,0 +1,230 @@
+Table "cs421g34.employees"
+ Column |          Type          |                        Modifiers
+--------+------------------------+---------------------------------------------------------
+ eid    | integer                | not null default nextval('employees_eid_seq'::regclass)
+ ename  | character varying(255) | not null
+ wage   | numeric(10,2)          | not null default 0.00
+Indexes:
+    "employees_pkey" PRIMARY KEY, btree (eid)
+Check constraints:
+    "employees_wage_check" CHECK (wage >= 0.00)
+Referenced by:
+    TABLE "hostesses" CONSTRAINT "hostesses_eid_fkey" FOREIGN KEY (eid) REFERENCES employees(eid)
+    TABLE "waiters" CONSTRAINT "waiters_eid_fkey" FOREIGN KEY (eid) REFERENCES employees(eid)
+
+
+Table "cs421g34.waiters"
+ Column |  Type   | Modifiers
+--------+---------+-----------
+ eid    | integer | not null
+Indexes:
+    "waiters_pkey" PRIMARY KEY, btree (eid)
+Foreign-key constraints:
+    "waiters_eid_fkey" FOREIGN KEY (eid) REFERENCES employees(eid)
+Referenced by:
+    TABLE "services" CONSTRAINT "services_eid_fkey" FOREIGN KEY (eid) REFERENCES waiters(eid)
+
+
+Table "cs421g34.hostesses"
+ Column |  Type   | Modifiers
+--------+---------+-----------
+ eid    | integer | not null
+Indexes:
+    "hostesses_pkey" PRIMARY KEY, btree (eid)
+Foreign-key constraints:
+    "hostesses_eid_fkey" FOREIGN KEY (eid) REFERENCES employees(eid)
+Referenced by:
+    TABLE "confirmedreservations" CONSTRAINT "confirmedreservations_eid_fkey" FOREIGN KEY (eid) REFERENCES hostesses(eid)
+
+
+Table "cs421g34.sections"
+    Column    |          Type          | Modifiers
+--------------+------------------------+-----------
+ section_id   | integer                | not null
+ section_name | character varying(255) | not null
+Indexes:
+    "sections_pkey" PRIMARY KEY, btree (section_id)
+Referenced by:
+    TABLE "services" CONSTRAINT "services_section_id_fkey" FOREIGN KEY (section_id) REFERENCES sections(section_id)
+    TABLE "tables" CONSTRAINT "tables_section_id_fkey" FOREIGN KEY (section_id) REFERENCES sections(section_id)
+
+
+Table "cs421g34.tables"
+    Column    |  Type   | Modifiers
+--------------+---------+-----------
+ table_number | integer | not null
+ number_seats | integer |
+ section_id   | integer |
+Indexes:
+    "tables_pkey" PRIMARY KEY, btree (table_number)
+Check constraints:
+    "tables_number_seats_check" CHECK (number_seats > 0)
+Foreign-key constraints:
+    "tables_section_id_fkey" FOREIGN KEY (section_id) REFERENCES sections(section_id)
+Referenced by:
+    TABLE "tableorders" CONSTRAINT "tableorders_table_number_fkey" FOREIGN KEY (table_number) REFERENCES tables(table_number)
+    TABLE "tablereservations" CONSTRAINT "tablereservations_table_number_fkey" FOREIGN KEY (table_number) REFERENCES tables(table_number)
+
+
+Table "cs421g34.reservations"
+  Column  |          Type          |                           Modifiers
+----------+------------------------+---------------------------------------------------------------
+ res_id   | integer                | not null default nextval('reservations_res_id_seq'::regclass)
+ res_date | date                   | not null
+ res_time | time without time zone | not null
+Indexes:
+    "reservations_pkey" PRIMARY KEY, btree (res_id)
+Referenced by:
+    TABLE "confirmedreservations" CONSTRAINT "confirmedreservations_res_id_fkey" FOREIGN KEY (res_id) REFERENCES reservations(res_id)
+    TABLE "tablereservations" CONSTRAINT "tablereservations_res_id_fkey" FOREIGN KEY (res_id) REFERENCES reservations(res_id)
+
+
+Table "cs421g34.orders"
+   Column   |          Type          |                      Modifiers
+------------+------------------------+------------------------------------------------------
+ oid        | integer                | not null default nextval('orders_oid_seq'::regclass)
+ order_date | date                   | not null default ('now'::text)::date
+ order_time | time without time zone | not null default ('now'::text)::time with time zone
+Indexes:
+    "orders_pkey" PRIMARY KEY, btree (oid)
+Referenced by:
+    TABLE "bills" CONSTRAINT "bills_oid_fkey" FOREIGN KEY (oid) REFERENCES orders(oid)
+    TABLE "ordermenuitems" CONSTRAINT "ordermenuitems_oid_fkey" FOREIGN KEY (oid) REFERENCES orders(oid)
+    TABLE "tableorders" CONSTRAINT "tableorders_oid_fkey" FOREIGN KEY (oid) REFERENCES orders(oid)
+
+
+Table "cs421g34.bills"
+ Column |     Type      |                      Modifiers
+--------+---------------+-----------------------------------------------------
+ bid    | integer       | not null default nextval('bills_bid_seq'::regclass)
+ oid    | integer       |
+ total  | numeric(10,2) | not null
+Indexes:
+    "bills_pkey" PRIMARY KEY, btree (bid)
+Check constraints:
+    "bills_total_check" CHECK (total >= 0.00)
+Foreign-key constraints:
+    "bills_oid_fkey" FOREIGN KEY (oid) REFERENCES orders(oid)
+Referenced by:
+    TABLE "payments" CONSTRAINT "payments_bid_fkey" FOREIGN KEY (bid) REFERENCES bills(bid)
+
+
+Table "cs421g34.payments"
+    Column     |          Type          |                       Modifiers
+---------------+------------------------+--------------------------------------------------------
+ pid           | integer                | not null default nextval('payments_pid_seq'::regclass)
+ bid           | integer                |
+ payment_date  | date                   | not null default ('now'::text)::date
+ payment_time  | time without time zone | not null default ('now'::text)::time with time zone
+ payment_type  | character varying(63)  | not null
+ amount        | numeric(10,2)          | not null
+ is_successful | boolean                | not null
+Indexes:
+    "payments_pkey" PRIMARY KEY, btree (pid)
+Check constraints:
+    "payments_amount_check" CHECK (amount >= 0.00)
+Foreign-key constraints:
+    "payments_bid_fkey" FOREIGN KEY (bid) REFERENCES bills(bid)
+
+
+Table "cs421g34.menus"
+  Column   |          Type          | Modifiers
+-----------+------------------------+-----------
+ menu_name | character varying(255) | not null
+ is_active | boolean                | not null
+Indexes:
+    "menus_pkey" PRIMARY KEY, btree (menu_name)
+Referenced by:
+    TABLE "menutomenuitems" CONSTRAINT "menutomenuitems_menu_name_fkey" FOREIGN KEY (menu_name) REFERENCES menus(menu_name)
+
+
+Table "cs421g34.menuitems"
+   Column    |          Type           | Modifiers
+-------------+-------------------------+-----------
+ item_name   | character varying(255)  | not null
+ description | character varying(1023) | not null
+ price       | numeric(10,2)           | not null
+Indexes:
+    "menuitems_pkey" PRIMARY KEY, btree (item_name)
+Check constraints:
+    "menuitems_price_check" CHECK (price >= 0.00)
+Referenced by:
+    TABLE "menutomenuitems" CONSTRAINT "menutomenuitems_item_name_fkey" FOREIGN KEY (item_name) REFERENCES menuitems(item_name)
+    TABLE "ordermenuitems" CONSTRAINT "ordermenuitems_item_name_fkey" FOREIGN KEY (item_name) REFERENCES menuitems(item_name)
+
+
+Table "cs421g34.menutomenuitems"
+  Column   |          Type          | Modifiers
+-----------+------------------------+-----------
+ menu_name | character varying(255) | not null
+ item_name | character varying(255) | not null
+Indexes:
+    "menutomenuitems_pkey" PRIMARY KEY, btree (menu_name, item_name)
+Foreign-key constraints:
+    "menutomenuitems_item_name_fkey" FOREIGN KEY (item_name) REFERENCES menuitems(item_name)
+    "menutomenuitems_menu_name_fkey" FOREIGN KEY (menu_name) REFERENCES menus(menu_name)
+
+Table "cs421g34.services"
+   Column   |          Type          | Modifiers
+------------+------------------------+-----------
+ eid        | integer                | not null
+ section_id | integer                |
+ begin_time | time without time zone | not null
+ end_time   | time without time zone | not null
+Indexes:
+    "services_pkey" PRIMARY KEY, btree (eid)
+Foreign-key constraints:
+    "services_eid_fkey" FOREIGN KEY (eid) REFERENCES waiters(eid)
+    "services_section_id_fkey" FOREIGN KEY (section_id) REFERENCES sections(section_id)
+
+Table "cs421g34.confirmedreservations"
+     Column     |          Type          |                      Modifiers
+----------------+------------------------+-----------------------------------------------------
+ res_id         | integer                | not null
+ eid            | integer                |
+ confirmed_date | date                   | not null default ('now'::text)::date
+ confirmed_time | time without time zone | not null default ('now'::text)::time with time zone
+Indexes:
+    "confirmedreservations_pkey" PRIMARY KEY, btree (res_id)
+Foreign-key constraints:
+    "confirmedreservations_eid_fkey" FOREIGN KEY (eid) REFERENCES hostesses(eid)
+    "confirmedreservations_res_id_fkey" FOREIGN KEY (res_id) REFERENCES reservations(res_id)
+
+
+Table "cs421g34.tablereservations"
+    Column    |  Type   | Modifiers
+--------------+---------+-----------
+ res_id       | integer | not null
+ table_number | integer | not null
+Indexes:
+    "tablereservations_pkey" PRIMARY KEY, btree (res_id, table_number)
+Foreign-key constraints:
+    "tablereservations_res_id_fkey" FOREIGN KEY (res_id) REFERENCES reservations(res_id)
+    "tablereservations_table_number_fkey" FOREIGN KEY (table_number) REFERENCES tables(table_number)
+
+
+Table "cs421g34.ordermenuitems"
+  Column   |          Type          | Modifiers
+-----------+------------------------+-----------
+ oid       | integer                | not null
+ item_name | character varying(255) | not null
+ quantity  | integer                |
+Indexes:
+    "ordermenuitems_pkey" PRIMARY KEY, btree (oid, item_name)
+Check constraints:
+    "ordermenuitems_quantity_check" CHECK (quantity >= 0)
+Foreign-key constraints:
+    "ordermenuitems_item_name_fkey" FOREIGN KEY (item_name) REFERENCES menuitems(item_name)
+    "ordermenuitems_oid_fkey" FOREIGN KEY (oid) REFERENCES orders(oid)
+
+
+Table "cs421g34.tableorders"
+    Column    |  Type   | Modifiers
+--------------+---------+-----------
+ oid          | integer | not null
+ table_number | integer | not null
+Indexes:
+    "tableorders_pkey" PRIMARY KEY, btree (oid, table_number)
+Foreign-key constraints:
+    "tableorders_oid_fkey" FOREIGN KEY (oid) REFERENCES orders(oid)
+    "tableorders_table_number_fkey" FOREIGN KEY (table_number) REFERENCES tables(table_number)
