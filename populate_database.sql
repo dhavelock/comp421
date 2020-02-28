@@ -161,33 +161,16 @@ INSERT INTO Menus VALUES ('Mains', TRUE);
 INSERT INTO Menus VALUES ('Desserts', TRUE);
 
 -- Menu Items
-INSERT INTO MenuItems VALUES ('Scallops', 'Beluga lentils, green curry-coconut sauce, 
-					   tamarind braised savoy cabbage, buttermilk fried cauliflower, 
-					   roasted parsnips, spicy peanuts', 36);
-INSERT INTO MenuItems VALUES ('72-Hour Short Ribs', 'Quebéc beef boneless short ribs, sunchokes, 
-					   celeriac, collard greens, king oyster mushrooms, spent grain 
-					   crumble, kakiage tempura, stout jus', 40);
-INSERT INTO MenuItems VALUES ('Woodland Mushroom Arancini', 'Breaded arancini stuffed with 
-					   mozzarella, arugula pesto, caponata agrodolce, bomba calabrese, 
-					   green zucchini, cherry tomatoes, grated Perigord Truffle', 28);
-INSERT INTO MenuItems VALUES ('Wild Boar Loin', 'Sous vide boar loin, mini tourtière, rutabaga 
-					   pavé, roasted chestnuts, romanesco, cranberry mostarda', 38);
-INSERT INTO MenuItems VALUES ('Carrot and Garam Masala Ravioli', 'Lamb belly bacon, Brussels 
-					   sprouts, honey mushrooms, pickled raisins, walnuts, lamb jus, 
-					   mustard greens', 28);
-INSERT INTO MenuItems VALUES ('Catfish & Andouille Sausage', 'Honey-lime glazed catfish filet, 
-					   grilled & smoked Andouille sausages, gumbo, green beans with crushed 
-					   almonds, remoulade, chayote, green onion and nigella seed hush 
-					   puppies', 32);
-INSERT INTO MenuItems VALUES ('Blind Tasting Menu', '$135 with pairings. Participation of the entire 
-					   table is required. Modifications to the “Tasting Menu” can not be 
-					   accommodated.', 90);
-INSERT INTO MenuItems VALUES ('Chocolate Pudding', 'Marbled rye bread pudding, toasted meringue cookies, 
-				       maple sponge toffee, port pearls, chocolate sauce, fresh figs', 13);
-INSERT INTO MenuItems VALUES ('Pineapple Sour Cream Cake', 'Pina colada sorbet, tapioca pearls in ginger 
-					   syrup, mango curd, ground cherries, cashew tuille, powdered curry, lemon balm', 12);
-INSERT INTO MenuItems VALUES ('Apple Cider-Cranberry Soufflé', 'Cinnamon and butterscotch chip ice cream, 
-					   pie crust crumble', 15);
+INSERT INTO MenuItems VALUES ('Scallops', 'Beluga lentils, green curry-coconut sauce, tamarind braised savoy cabbage, buttermilk fried cauliflower, roasted parsnips, spicy peanuts', 36);
+INSERT INTO MenuItems VALUES ('72-Hour Short Ribs', 'Quebéc beef boneless short ribs, sunchokes, crumble, kakiage tempura, stout jus', 40);
+INSERT INTO MenuItems VALUES ('Woodland Mushroom Arancini', 'Breaded arancini stuffed with mozzarella, arugula pesto, caponata agrodolce, bomba calabrese, green zucchini, cherry tomatoes, grated Perigord Truffle', 28);
+INSERT INTO MenuItems VALUES ('Wild Boar Loin', 'Sous vide boar loin, mini tourtière, rutabaga pavé, roasted chestnuts, romanesco, cranberry mostarda', 38);
+INSERT INTO MenuItems VALUES ('Carrot and Garam Masala Ravioli', 'Lamb belly bacon, Brussels sprouts, honey mushrooms, pickled raisins, walnuts, lamb jus, mustard greens', 28);
+INSERT INTO MenuItems VALUES ('Catfish & Andouille Sausage', 'Honey-lime glazed catfish filet, grilled & smoked Andouille sausages, gumbo, green beans with crushed almonds, remoulade, chayote, green onion and nigella seed hush puppies', 32);
+INSERT INTO MenuItems VALUES ('Blind Tasting Menu', '$135 with pairings. Participation of the entire table is required. Modifications to the “Tasting Menu” can not be accommodated.', 90);
+INSERT INTO MenuItems VALUES ('Chocolate Pudding', 'Marbled rye bread pudding, toasted meringue cookies, maple sponge toffee, port pearls, chocolate sauce, fresh figs', 13);
+INSERT INTO MenuItems VALUES ('Pineapple Sour Cream Cake', 'Pina colada sorbet, tapioca pearls in ginger syrup, mango curd, ground cherries, cashew tuille, powdered curry, lemon balm', 12);
+INSERT INTO MenuItems VALUES ('Apple Cider-Cranberry Soufflé', 'Cinnamon and butterscotch chip ice cream, pie crust crumble', 15);
 					   
 -- Menu to menu items
 INSERT INTO MenutoMenuItems VALUES ('Mains', 'Scallops');
