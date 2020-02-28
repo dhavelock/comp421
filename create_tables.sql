@@ -35,7 +35,7 @@ CREATE TABLE Tables (
 
 CREATE TABLE Reservations (
 	res_id SERIAL PRIMARY KEY,
-	res_date DATE NOT NULL,
+	res_date DATE NOT NULL CHECK (res_date > CURRENT_DATE),
 	res_time TIME NOT NULL
 );
 
