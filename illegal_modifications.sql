@@ -13,3 +13,6 @@ INSERT INTO Payments (bid, payment_date, payment_time, payment_type, amount, is_
 UPDATE MenuItems
 SET price = -17.99
 WHERE MenuItems.item_name = 'Carrot and Garam Masala Ravioli';
+
+-- Add a reservation at a time that's already passed
+INSERT INTO Reservations (res_date, res_time) VALUES ('2020-02-06', '18:15');
