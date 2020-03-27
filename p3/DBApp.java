@@ -31,6 +31,62 @@ public class DBApp {
         return conn;
     }
 
+    public int newOrder() {
+        Integer tableNum, count = 0;
+
+        System.out.println("Enter table number: ");
+        tableNum = tryParseInt(tryReadLine());
+
+        try {
+            String tableQuery = "SELECT COUNT(*) FROM tables WHERE table_number = ?";
+
+            PreparedStatement tableCheck = conn.prepareStatement(tableQuery);
+            tableCheck.setInt(1, tableNum);
+
+            ResultSet resultSet = tableCheck.executeQuery();
+            if(resultSet.next()) {
+                count = resultSet.getInt(1);
+            } 
+            if (count != 1) {
+                System.out.println("Table does not exist");
+                return 1;
+            }
+
+            tableCheck.close();
+            Time currTime = new Time(System.currentTimeMillis());
+            
+            String orderString = "INSERT INTO orders (order_time) VALUES ('" + currTime.toString() + "');";
+            String generatedColumns[] = { "oid" };
+
+            PreparedStatement insertOrder = conn.prepareStatement(orderString, generatedColumns);
+            insertOrder.executeUpdate();
+            resultSet = insertOrder.getGeneratedKeys();
+            int oid = 0;
+
+            if (resultSet.next()) {
+                oid = resultSet.getInt(1);
+            } else {
+                System.out.println("Failed to insert reservation");
+                return 1;
+            }
+            insertOrder.close();
+            String TOstring = "INSERT INTO tableorders VALUES (?, ?);";
+            PreparedStatement TOstm = conn.prepareStatement(TOstring);
+            TOstm.setInt(1, oid);
+            TOstm.setInt(2, tableNum);
+
+            TOstm.executeUpdate();
+            TOstm.close();
+
+            System.out.println("Order ID " + oid + " created successfully for Table " + tableNum);
+            return 0;
+        } catch (SQLException e) {
+            System.out.println("Error: Failed to create and execute statement");
+            e.printStackTrace();
+            return 1;
+        }
+    }
+
     public int addReservation() {
         Integer year, month, day, hour, minute, tableNum;
 
@@ -188,7 +244,9 @@ public class DBApp {
                 case "res" :
                     app.addReservation();
                     break;
-                
+                case "newOrder" :
+                    app.newOrder();
+                    break;
                 default : 
                     break;
             }
@@ -233,8 +291,8 @@ public class DBApp {
         System.out.println("   quit         Terminate the program");
         System.out.println("   help         List the available commands");
         System.out.println("   res          Create a new reservation");
-        System.out.println("   cmd2         Placeholder text for cmd2");
-        System.out.println("   cmd3         Placeholder text for cmd3");
+        System.out.println("   newOrder     Create a new order");
+        System.out.println("   addToOrder   Add an item to an order");
         System.out.println("   cmd4         Placeholder text for cmd4");
     }
 }
