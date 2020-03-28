@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Date;
 import java.sql.Time;
+import java.util.ArrayList;
+
 import java.sql.DriverManager;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -29,6 +31,71 @@ public class DBApp {
         }
  
         return conn;
+    }
+
+    public int addItemToOrder() {
+        Integer oid;
+
+        try {
+            String oidQuery = "SELECT * FROM tableorders WHERE tableorders.oid NOT IN (SELECT bills.oid FROM bills);";
+            PreparedStatement oidList = conn.prepareStatement(oidQuery);
+
+            ResultSet rs = oidList.executeQuery();
+            System.out.println("Enter active order id from the list below: \n");
+            System.out.println("table | oid");
+            System.out.println("-----------");
+            ArrayList<Integer> oids = new ArrayList<Integer>();
+            while (rs.next()) {
+                System.out.println(rs.getInt(2) + "     | "+ rs.getInt(1));
+                oids.add(rs.getInt(1));
+            }
+            oidList.close();
+            System.out.print("=> ");
+            oid = tryParseInt(tryReadLine());
+
+            if (!oids.contains(oid)) {
+                System.out.println("Invalid order ID");
+                return 1;
+            }
+
+            String itemQuery = "SELECT item_name FROM menutomenuitems INNER JOIN menus ON menus.menu_name = menutomenuitems.menu_name WHERE menus.is_active = true;";
+            PreparedStatement itemList = conn.prepareStatement(itemQuery);
+            rs = itemList.executeQuery();
+            System.out.println("Enter item name to add to order: \n");
+            System.out.println("items");
+            System.out.println("-------------------");
+            ArrayList<String> items = new ArrayList<String>();
+            while (rs.next()) {
+                System.out.println(rs.getString(1));
+                items.add(rs.getString(1));
+            }
+            System.out.print("=> ");
+            String item = tryReadLine();
+
+            if (!items.contains(item)) {
+                System.out.println("Invalid item");
+                return 1;
+            }
+            System.out.println("Enter quantity: ");
+            System.out.print("=> ");
+            int quant = tryParseInt(tryReadLine());
+
+            String add = "INSERT INTO ordermenuitems VALUES (?,?,?);";
+            PreparedStatement addStm = conn.prepareStatement(add);
+            addStm.setInt(1, oid);
+            addStm.setString(2, item);
+            addStm.setInt(3, quant);
+            addStm.executeUpdate();
+
+            System.out.println(item + " added to order " + oid + " successfully");
+
+            return 0;
+
+        } catch (SQLException e) {
+            System.out.println("Error: Failed to create and execute statement");
+            e.printStackTrace();
+            return 1;
+        }
     }
 
     public int newOrder() {
@@ -244,9 +311,15 @@ public class DBApp {
                 case "res" :
                     app.addReservation();
                     break;
+
                 case "newOrder" :
                     app.newOrder();
                     break;
+                    
+                case "addToOrder" :
+                    app.addItemToOrder();
+                    break;    
+
                 default : 
                     break;
             }
