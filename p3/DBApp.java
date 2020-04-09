@@ -133,7 +133,7 @@ public class DBApp {
             if (resultSet.next()) {
                 oid = resultSet.getInt(1);
             } else {
-                System.out.println("Failed to insert reservation");
+                System.out.println("Failed to insert order");
                 return 1;
             }
             insertOrder.close();
@@ -182,7 +182,7 @@ public class DBApp {
 
         try {
             int counter =0;
-            String selectReservation = "SELECT res_id FROM Reservations WHERE res_date = '" + dateSql.toString() + "'";
+            String selectReservation = "SELECT ConfirmedReservations.res_id FROM Reservations INNER JOIN ConfirmedReservations ON ConfirmedReservations.res_id = Reservations.res_id WHERE res_date = '" + dateSql.toString() + "'";
             PreparedStatement stmtRes = conn.prepareStatement(selectReservation);
             ResultSet rs = stmtRes.executeQuery();
             while(rs.next()){
@@ -201,6 +201,37 @@ public class DBApp {
         return 0;
     }
 
+    public int getBill() {
+        Integer order_id;
+        
+        System.out.print("Order Id: ");
+        order_id = tryParseInt(tryReadLine());
+        if (order_id == null) {
+            return 1;
+        }
+
+        try {
+            String selectBill = "SELECT total FROM Bills WHERE oid = " + order_id;
+            PreparedStatement stmtBill = conn.prepareStatement(selectBill);
+            ResultSet rs = stmtBill.executeQuery();
+
+            if(rs.next()){
+                int total = rs.getInt("total");
+                System.out.println("Total is : " +  total);
+            }
+            else{
+                System.out.println("Failed to get bill");
+            }
+        }
+
+        catch (SQLException e) {
+            System.out.println("Error: Failed to create and execute statement");
+            e.printStackTrace();
+            return 1;
+        }
+
+        return 0;
+    }
     public int addReservation() {
         Integer year, month, day, hour, minute, tableNum;
 
@@ -370,6 +401,9 @@ public class DBApp {
                 case "findReservation" : 
                     app.findReservation();
                     break;
+                case "getBill" :
+                    app.getBill();
+                    break;
 
                 default : 
                     break;
@@ -418,5 +452,6 @@ public class DBApp {
         System.out.println("   newOrder         Create a new order");
         System.out.println("   addToOrder       Add an item to an order");
         System.out.println("   findReservation  See number of reservations on a given day");
+        System.out.println("   getBill          Get the bill total for an order");
     }
 }
