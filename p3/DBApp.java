@@ -154,6 +154,53 @@ public class DBApp {
         }
     }
 
+    public int findReservation(){
+        Integer year, month, day;
+        String name;
+        System.out.print("Year: ");
+        // Get year of reservation
+        year = tryParseInt(tryReadLine());
+        if (year == null || year < 2000 || year > 9999) {
+            return 1;
+        }
+        // Get month
+        System.out.print("Month: ");
+        month = tryParseInt(tryReadLine());
+        if (month == null || month > 12 || month < 1) {
+            return 1;
+        }
+
+        // Get day
+        System.out.print("Day: ");
+        day = tryParseInt(tryReadLine());
+        if (day == null || day > 31 || day < 1) {
+            return 1;
+        }
+
+        String date = year + (month > 9 ? "-" : "-0") + month + "-" + day;
+        Date dateSql = Date.valueOf(date);
+
+        try {
+            int counter =0;
+            String selectReservation = "SELECT res_id FROM Reservations WHERE res_date = '" + dateSql.toString() + "'";
+            PreparedStatement stmtRes = conn.prepareStatement(selectReservation);
+            ResultSet rs = stmtRes.executeQuery();
+            while(rs.next()){
+                counter++;
+            }
+            stmtRes.close();
+            System.out.println("There are " + counter + " reservations on "+ date);
+        }
+
+        catch(SQLException e) {
+            System.out.println("Error: Failed to create and execute statement");
+            e.printStackTrace();
+            return 1;
+        }
+
+        return 0;
+    }
+
     public int addReservation() {
         Integer year, month, day, hour, minute, tableNum;
 
@@ -320,6 +367,10 @@ public class DBApp {
                     app.addItemToOrder();
                     break;    
 
+                case "findReservation" : 
+                    app.findReservation();
+                    break;
+
                 default : 
                     break;
             }
@@ -361,11 +412,11 @@ public class DBApp {
 
     private static void help() {
         System.out.println("Available Commands:");
-        System.out.println("   quit         Terminate the program");
-        System.out.println("   help         List the available commands");
-        System.out.println("   res          Create a new reservation");
-        System.out.println("   newOrder     Create a new order");
-        System.out.println("   addToOrder   Add an item to an order");
-        System.out.println("   cmd4         Placeholder text for cmd4");
+        System.out.println("   quit             Terminate the program");
+        System.out.println("   help             List the available commands");
+        System.out.println("   res              Create a new reservation");
+        System.out.println("   newOrder         Create a new order");
+        System.out.println("   addToOrder       Add an item to an order");
+        System.out.println("   findReservation  See number of reservations on a given day");
     }
 }
