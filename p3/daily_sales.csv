@@ -1,0 +1,51 @@
+Item Name,Quantity,Date,,,,,,,,,,,,,
+72-Hour Short Ribs,1,2020-02-06,,,,,,,,,,,,,
+Carrot and Garam Masala Ravioli,2,2020-02-06,,,,,,,,,,,,,
+Catfish & Andouille Sausage,1,2020-02-06,,,,,,,,,,,,,
+Chocolate Pudding,3,2020-02-06,,Sum of Quantity,Column Labels,,,,,,,,,,
+Pineapple Sour Cream Cake,1,2020-02-06,,Row Labels,72-Hour Short Ribs,Apple Cider-Cranberry Soufflé,Blind Tasting Menu,Carrot and Garam Masala Ravioli,Catfish & Andouille Sausage,Chocolate Pudding,Pineapple Sour Cream Cake,Scallops,Wild Boar Loin,Woodland Mushroom Arancini,Grand Total
+Scallops,2,2020-02-06,,2020-02-06,1,0,0,2,1,3,1,2,1,1,12
+Wild Boar Loin,1,2020-02-06,,2020-02-07,0,0,4,0,0,1,0,1,1,0,7
+Woodland Mushroom Arancini,1,2020-02-06,,2020-02-08,3,0,0,2,0,3,0,0,0,1,9
+Blind Tasting Menu,4,2020-02-07,,2020-02-12,1,0,0,1,0,0,0,0,0,2,4
+Chocolate Pudding,1,2020-02-07,,2020-02-13,0,1,0,0,1,0,0,2,1,0,5
+Scallops,1,2020-02-07,,2020-02-14,1,0,10,2,0,0,1,1,1,1,17
+Wild Boar Loin,1,2020-02-07,,2020-02-15,1,0,0,2,1,0,1,1,1,1,8
+72-Hour Short Ribs,3,2020-02-08,,2020-02-16,0,0,0,0,0,1,0,0,1,3,5
+Carrot and Garam Masala Ravioli,2,2020-02-08,,2020-02-20,0,0,2,0,0,0,0,0,0,0,2
+Chocolate Pudding,3,2020-02-08,,2020-02-21,0,0,2,0,0,0,0,1,1,0,4
+Woodland Mushroom Arancini,1,2020-02-08,,2020-02-22,0,0,4,2,1,0,0,0,0,1,8
+72-Hour Short Ribs,1,2020-02-12,,2020-03-27,0,0,0,0,0,1,0,0,0,0,1
+Carrot and Garam Masala Ravioli,1,2020-02-12,,2020-03-29,0,0,0,0,0,0,0,5,0,0,5
+Woodland Mushroom Arancini,2,2020-02-12,,Grand Total,7,1,22,11,4,9,3,13,7,10,87
+Apple Cider-Cranberry Soufflé,1,2020-02-13,,,,,,,,,,,,,
+Catfish & Andouille Sausage,1,2020-02-13,,,,,,,,,,,,,
+Scallops,2,2020-02-13,,,,,,,,,,,,,
+Wild Boar Loin,1,2020-02-13,,,,,,,,,,,,,
+72-Hour Short Ribs,1,2020-02-14,,,,,,,,,,,,,
+Blind Tasting Menu,10,2020-02-14,,,,,,,,,,,,,
+Carrot and Garam Masala Ravioli,2,2020-02-14,,,,,,,,,,,,,
+Pineapple Sour Cream Cake,1,2020-02-14,,,,,,,,,,,,,
+Scallops,1,2020-02-14,,,,,,,,,,,,,
+Wild Boar Loin,1,2020-02-14,,,,,,,,,,,,,
+Woodland Mushroom Arancini,1,2020-02-14,,,,,,,,,,,,,
+72-Hour Short Ribs,1,2020-02-15,,,,,,,,,,,,,
+Carrot and Garam Masala Ravioli,2,2020-02-15,,,,,,,,,,,,,
+Catfish & Andouille Sausage,1,2020-02-15,,,,,,,,,,,,,
+Pineapple Sour Cream Cake,1,2020-02-15,,,,,,,,,,,,,
+Scallops,1,2020-02-15,,,,,,,,,,,,,
+Wild Boar Loin,1,2020-02-15,,,,,,,,,,,,,
+Woodland Mushroom Arancini,1,2020-02-15,,,,,,,,,,,,,
+Chocolate Pudding,1,2020-02-16,,,,,,,,,,,,,
+Wild Boar Loin,1,2020-02-16,,,,,,,,,,,,,
+Woodland Mushroom Arancini,3,2020-02-16,,,,,,,,,,,,,
+Blind Tasting Menu,2,2020-02-20,,,,,,,,,,,,,
+Blind Tasting Menu,2,2020-02-21,,,,,,,,,,,,,
+Scallops,1,2020-02-21,,,,,,,,,,,,,
+Wild Boar Loin,1,2020-02-21,,,,,,,,,,,,,
+Blind Tasting Menu,4,2020-02-22,,,,,,,,,,,,,
+Carrot and Garam Masala Ravioli,2,2020-02-22,,,,,,,,,,,,,
+Catfish & Andouille Sausage,1,2020-02-22,,,,,,,,,,,,,
+Woodland Mushroom Arancini,1,2020-02-22,,,,,,,,,,,,,
+Chocolate Pudding,1,2020-03-27,,,,,,,,,,,,,
+Scallops,5,2020-03-29,,,,,,,,,,,,,
