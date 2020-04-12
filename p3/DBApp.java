@@ -33,6 +33,90 @@ public class DBApp {
         return conn;
     }
 
+    public int createBill() {
+        Integer oid;
+
+        try {
+            System.out.print("Order ID: ");
+            oid = tryParseInt(tryReadLine());
+
+            if (oid == null) {
+                System.out.println("Invalid order ID");
+                return 1;
+            }
+
+            String createBillQuery = "INSERT INTO Bills (oid, total) SELECT oid, sum ( MenuItems.price * OrderMenuItems.quantity) as item_total FROM OrderMenuItems INNER JOIN MenuItems ON OrderMenuItems.item_name = MenuItems.item_name AND OrderMenuItems.oid = " + oid + " GROUP BY OrderMenuItems.oid ORDER BY OrderMenuItems.oid;";
+            String generatedColumns[] = { "bid", "total" };
+            PreparedStatement stmtCreateBill = conn.prepareStatement(createBillQuery, generatedColumns);
+            stmtCreateBill.executeUpdate();
+
+            ResultSet rs = stmtCreateBill.getGeneratedKeys();
+
+            while (rs.next()) {
+                System.out.println("Bill ID: " + rs.getInt(1) + ", Total: $" + rs.getString(2));
+            }
+
+            stmtCreateBill.close();
+
+            return 0;
+
+        } catch (SQLException e) {
+            System.out.println("Error: Failed to create and execute statement");
+            e.printStackTrace();
+            return 1;
+        }
+    }
+
+    public int viewOrder() {
+        Integer oid;
+
+        try {
+            System.out.print("Order id: ");
+            oid = tryParseInt(tryReadLine());
+
+            if (oid == null) {
+                System.out.println("Invalid order ID");
+                return 1;
+            }
+
+            String orderQuery = "SELECT order_date, order_time FROM orders WHERE oid = " + oid + ";";
+            PreparedStatement stmtOrder = conn.prepareStatement(orderQuery);
+            ResultSet rsOrder = stmtOrder.executeQuery();
+
+            if (rsOrder.next()) {
+                System.out.println("Date: " + rsOrder.getString(1) + ", Time: " + rsOrder.getString(2));
+                stmtOrder.close();
+            } else {
+                stmtOrder.close();
+                System.out.println("This order id does not exist");
+                return 1;
+            }
+
+            String oidQuery = "SELECT item_name, quantity FROM ordermenuitems WHERE oid = " + oid + ";";
+            PreparedStatement stmtOid = conn.prepareStatement(oidQuery);
+            ResultSet rsOrderItems = stmtOid.executeQuery();
+            int count = 0;
+
+            while (rsOrderItems.next()) {
+                System.out.println(rsOrderItems.getString(2) + " x " + rsOrderItems.getString(1));
+                count++;
+            }
+
+            if (count == 0) {
+                System.out.println("There are no order items for order id " + oid);
+            }
+
+            stmtOid.close();
+
+            return 0;
+
+        } catch (SQLException e) {
+            System.out.println("Error: Failed to create and execute statement");
+            e.printStackTrace();
+            return 1;
+        }
+    }
+
     public int addItemToOrder() {
         Integer oid;
 
@@ -50,8 +134,13 @@ public class DBApp {
                 oids.add(rs.getInt(1));
             }
             oidList.close();
-            System.out.print("=> ");
+            System.out.print("choose oid: ");
             oid = tryParseInt(tryReadLine());
+
+            if (oid == null) {
+                System.out.println("Invalid order ID");
+                return 1;
+            }
 
             if (!oids.contains(oid)) {
                 System.out.println("Invalid order ID");
@@ -69,15 +158,14 @@ public class DBApp {
                 System.out.println(rs.getString(1));
                 items.add(rs.getString(1));
             }
-            System.out.print("=> ");
+            System.out.print("choose item name: ");
             String item = tryReadLine();
 
             if (!items.contains(item)) {
                 System.out.println("Invalid item");
                 return 1;
             }
-            System.out.println("Enter quantity: ");
-            System.out.print("=> ");
+            System.out.print("Enter quantity: ");
             int quant = tryParseInt(tryReadLine());
 
             String add = "INSERT INTO ordermenuitems VALUES (?,?,?);";
@@ -101,8 +189,13 @@ public class DBApp {
     public int newOrder() {
         Integer tableNum, count = 0;
 
-        System.out.println("Enter table number: ");
+        System.out.print("Enter table number: ");
         tableNum = tryParseInt(tryReadLine());
+
+        if (tableNum == null) {
+            System.out.println("Error: Invalid Table Number");
+            return 1;
+        }
 
         try {
             String tableQuery = "SELECT COUNT(*) FROM tables WHERE table_number = ?";
@@ -115,7 +208,7 @@ public class DBApp {
                 count = resultSet.getInt(1);
             } 
             if (count != 1) {
-                System.out.println("Table does not exist");
+                System.out.println("Error: Table does not exist");
                 return 1;
             }
 
@@ -161,12 +254,14 @@ public class DBApp {
         // Get year of reservation
         year = tryParseInt(tryReadLine());
         if (year == null || year < 2000 || year > 9999) {
+            System.out.println("Invalid Year");
             return 1;
         }
         // Get month
         System.out.print("Month: ");
         month = tryParseInt(tryReadLine());
         if (month == null || month > 12 || month < 1) {
+            System.out.println("Invalid Month");
             return 1;
         }
 
@@ -174,6 +269,7 @@ public class DBApp {
         System.out.print("Day: ");
         day = tryParseInt(tryReadLine());
         if (day == null || day > 31 || day < 1) {
+            System.out.println("Invalid Day");
             return 1;
         }
 
@@ -182,11 +278,16 @@ public class DBApp {
 
         try {
             int counter =0;
-            String selectReservation = "SELECT ConfirmedReservations.res_id FROM Reservations INNER JOIN ConfirmedReservations ON ConfirmedReservations.res_id = Reservations.res_id WHERE res_date = '" + dateSql.toString() + "'";
+            String selectReservation = "SELECT ConfirmedReservations.res_id, Reservations.res_time FROM Reservations INNER JOIN ConfirmedReservations ON ConfirmedReservations.res_id = Reservations.res_id WHERE res_date = '" + dateSql.toString() + "'";
             PreparedStatement stmtRes = conn.prepareStatement(selectReservation);
             ResultSet rs = stmtRes.executeQuery();
+            System.out.println("Reservation details:");
             while(rs.next()){
                 counter++;
+                int res_id = rs.getInt(1);
+                String res_time = rs.getString(2);
+
+                System.out.println("res_id: " + res_id + " at " + res_time);
             }
             stmtRes.close();
             System.out.println("There are " + counter + " reservations on "+ date);
@@ -211,17 +312,20 @@ public class DBApp {
         }
 
         try {
-            String selectBill = "SELECT total FROM Bills WHERE oid = " + order_id;
+            String selectBill = "SELECT bid, total FROM Bills WHERE oid = " + order_id;
             PreparedStatement stmtBill = conn.prepareStatement(selectBill);
             ResultSet rs = stmtBill.executeQuery();
 
-            if(rs.next()){
+            if(rs.next()) {
                 int total = rs.getInt("total");
-                System.out.println("Total is : " +  total);
+                int bid = rs.getInt("bid");
+                System.out.println("Bill id: " + bid);
+                System.out.println("Total: $" +  total);
+            }  else {
+                System.out.println("No bill has been created for this order id");
             }
-            else{
-                System.out.println("Failed to get bill");
-            }
+
+            stmtBill.close();
         }
 
         catch (SQLException e) {
@@ -232,13 +336,34 @@ public class DBApp {
 
         return 0;
     }
+
     public int addReservation() {
+        try {
+            String hostessQuery = "SELECT count(*) FROM Hostesses WHERE eid = " + eid + ";";
+            PreparedStatement stmtHostess = conn.prepareStatement(hostessQuery);
+            ResultSet rs = stmtHostess.executeQuery();
+
+            if (rs.next() && rs.getInt("count") == 0) {
+                System.out.println("Hostess id does not exist. Please log in as a Hostess");
+                stmtHostess.close();
+                return 1;
+            }
+
+            stmtHostess.close();
+
+        } catch (SQLException e) {
+            System.out.println("Error: Failed to create and execute statement");
+            e.printStackTrace();
+            return 1;
+        }
+
         Integer year, month, day, hour, minute, tableNum;
 
         // Get year
         System.out.print("Year: ");
         year = tryParseInt(tryReadLine());
         if (year == null || year < 2000 || year > 9999) {
+            System.out.println("Error: Invalid Year");
             return 1;
         }
 
@@ -246,6 +371,7 @@ public class DBApp {
         System.out.print("Month: ");
         month = tryParseInt(tryReadLine());
         if (month == null || month > 12 || month < 1) {
+            System.out.println("Error: Invalid Month");
             return 1;
         }
 
@@ -253,6 +379,7 @@ public class DBApp {
         System.out.print("Day: ");
         day = tryParseInt(tryReadLine());
         if (day == null || day > 31 || day < 1) {
+            System.out.println("Error: Invalid Day");
             return 1;
         }
 
@@ -260,6 +387,7 @@ public class DBApp {
         System.out.print("Hour: ");
         hour = tryParseInt(tryReadLine());
         if (hour == null || hour > 23 || hour < 0) {
+            System.out.println("Error: Invalid Hour");
             return 1;
         }
 
@@ -267,6 +395,7 @@ public class DBApp {
         System.out.print("Minute: ");
         minute = tryParseInt(tryReadLine());
         if (minute == null || minute > 59 || minute < 0) {
+            System.out.println("Error: Invalid Minute");
             return 1;
         }
 
@@ -274,6 +403,7 @@ public class DBApp {
         System.out.print("Requested Table Number: ");
         tableNum = tryParseInt(tryReadLine());
         if (tableNum == null) {
+            System.out.println("Error: Invalid Table Number");
             return 1;
         }
 
@@ -287,6 +417,21 @@ public class DBApp {
         Time currTime = new Time(System.currentTimeMillis());
 
         try {
+            // Check if table exists
+            String tableQuery = "SELECT COUNT(*) FROM tables WHERE table_number = ?";
+
+            PreparedStatement tableCheck = conn.prepareStatement(tableQuery);
+            tableCheck.setInt(1, tableNum);
+
+            ResultSet resultSet = tableCheck.executeQuery();
+            if(resultSet.next() && resultSet.getInt(1) != 1) {
+                System.out.println("Error: Table does not exist");
+                tableCheck.close();
+                return 1;
+            }
+
+            tableCheck.close();
+
             String insertRes = "INSERT INTO Reservations (res_date, res_time) VALUES ('" + dateSql.toString() + "', '" + timeSql.toString() + "')";
             String insertConfirmRes = "INSERT INTO ConfirmedReservations VALUES (?, ?, '" + currDate.toString() + "', '" + currTime.toString() +"')";
             String insertTableRes = "INSERT INTO TableReservations VALUES (?, ?);";
@@ -324,6 +469,7 @@ public class DBApp {
             stmtTabRes.close();
 
             System.out.println("Reservation successfully created. Details:");
+            System.out.println("    Reservation id: " + res_id);
             System.out.println("    Date: " + dateSql.toString());
             System.out.println("    Time: " + timeSql.toString());
             System.out.println("    Table Number: " + tableNum);
@@ -386,7 +532,7 @@ public class DBApp {
                     help();
                     break;
                 
-                case "res" :
+                case "addRes" :
                     app.addReservation();
                     break;
 
@@ -396,16 +542,27 @@ public class DBApp {
                     
                 case "addToOrder" :
                     app.addItemToOrder();
+                    break;   
+                    
+                case "viewOrder" :
+                    app.viewOrder();
                     break;    
 
                 case "findReservation" : 
                     app.findReservation();
                     break;
+
+                case "createBill" :
+                    app.createBill();
+                    break;
+
                 case "getBill" :
                     app.getBill();
                     break;
 
                 default : 
+                    System.out.println("This command does not exist");
+                    help();
                     break;
             }
         }
@@ -448,10 +605,12 @@ public class DBApp {
         System.out.println("Available Commands:");
         System.out.println("   quit             Terminate the program");
         System.out.println("   help             List the available commands");
-        System.out.println("   res              Create a new reservation");
+        System.out.println("   addRes           Create a new reservation");
         System.out.println("   newOrder         Create a new order");
         System.out.println("   addToOrder       Add an item to an order");
+        System.out.println("   viewOrder        View the contents of an order");
         System.out.println("   findReservation  See number of reservations on a given day");
+        System.out.println("   createBill       Create the bill for a given order id");
         System.out.println("   getBill          Get the bill total for an order");
     }
 }
