@@ -2,6 +2,6 @@ The oid_index index on Bills is useful for the getBill() function in the DB App.
 As we are trying to find a record based on order id (oid), an index on oid would allow us to search
 the records by the order id and more efficiently find the matching records for the query.
 
-The date_index on Reservations would be useful the findReservation() function, as the query 
+The date_index on Reservations would be useful for the findReservation() function, as the query 
 searches the record by date. The index would allow for a more efficient search of the record by 
 the date parameter.

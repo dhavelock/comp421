@@ -561,8 +561,6 @@ public class DBApp {
                     break;
 
                 default : 
-                    System.out.println("This command does not exist");
-                    help();
                     break;
             }
         }

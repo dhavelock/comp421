@@ -1,0 +1,112 @@
+$ java -cp .:./postgresql-42.2.9.jre7.jar DBApp
+Establishing connection to database...
+Connected to the PostgreSQL server successfully.
+Please enter your employee id:
+  hint: 1 for type waiter, 5 for type hostess
+5
+Welcome to Group 34's Restaurant Management System!
+Available Commands:
+   quit             Terminate the program
+   help             List the available commands
+   addRes           Create a new reservation
+   newOrder         Create a new order
+   addToOrder       Add an item to an order
+   viewOrder        View the contents of an order
+   findReservation  See number of reservations on a given day
+   createBill       Create the bill for a given order id
+   getBill          Get the bill total for an order
+=> findReservation
+Year: 2020
+Month: 8
+Day: 6
+Reservation details:
+There are 0 reservations on 2020-08-6
+=> addRes
+Year: 2020
+Month: 8
+Day: 6
+Hour: 20
+Minute: 00
+Requested Table Number: 8
+Reservation successfully created. Details:
+    Reservation id: 21
+    Date: 2020-08-06
+    Time: 20:00:00
+    Table Number: 8
+=> findReservation
+Year: 2020
+Month: 8
+Day: 6
+Reservation details:
+res_id: 21 at 20:00:00
+There are 1 reservations on 2020-08-6
+=> newOrder
+Enter table number: 5
+Order ID 21 created successfully for Table 5
+=> addToOrder
+Enter active order id from the list below: 
+
+table | oid
+-----------
+5     | 21
+choose oid: 21
+Enter item name to add to order: 
+
+items
+-------------------
+Blind Tasting Menu
+Catfish & Andouille Sausage
+Carrot and Garam Masala Ravioli
+Wild Boar Loin
+Woodland Mushroom Arancini
+72-Hour Short Ribs
+Scallops
+Apple Cider-Cranberry Soufflé
+Pineapple Sour Cream Cake
+Chocolate Pudding
+choose item name: Blind Tasting Menu
+Enter quantity: 2
+Blind Tasting Menu added to order 21 successfully
+=> addToOrder
+Enter active order id from the list below: 
+
+table | oid
+-----------
+5     | 21
+choose oid: 21
+Enter item name to add to order: 
+
+items
+-------------------
+Blind Tasting Menu
+Catfish & Andouille Sausage
+Carrot and Garam Masala Ravioli
+Wild Boar Loin
+Woodland Mushroom Arancini
+72-Hour Short Ribs
+Scallops
+Apple Cider-Cranberry Soufflé
+Pineapple Sour Cream Cake
+Chocolate Pudding
+choose item name: Scallops
+Enter quantity: 3
+Scallops added to order 21 successfully
+=> viewOrder
+Order id: 21
+Date: 2020-04-12, Time: 10:56:58
+2 x Blind Tasting Menu
+3 x Scallops
+=> getBill
+Order Id: 21
+No bill has been created for this order id
+=> createBill
+Order ID: 21
+Bill ID: 21, Total: $288.00
+=> getBill
+Order Id: 21
+Bill id: 21
+Total: $288
+=> quit
+Goodbye!
+Connection closed.
+$
