@@ -15,7 +15,7 @@ BEGIN
         INSERT INTO Bills (oid, total) 
         SELECT oid, sum ( MenuItems.price * OrderMenuItems.quantity) as item_total
         FROM OrderMenuItems INNER JOIN MenuItems
-        ON OrderMenuItems.item_name = MenuItems.item_name
+        ON OrderMenuItems.item_name = MenuItems.item_name AND OrderMenuItems.oid = rec_order.oid
         GROUP BY OrderMenuItems.oid ORDER BY OrderMenuItems.oid
   
   END LOOP;
